@@ -1,0 +1,29 @@
+# Environments
+venv/
+env/
+.venv/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+
+# PyTorch models and data
+*.pth
+weights/
+data/quickdraw_data/
+data/tu_berlin_data/
+data/glove.6B.300d.txt
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temp files
+*.tmp
+data/canvas_bbox.json
