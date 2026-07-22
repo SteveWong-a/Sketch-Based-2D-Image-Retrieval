@@ -6,3 +6,5 @@ gradio
 spaces
 transformers
 neo4j
+google-genai
+pydantic
