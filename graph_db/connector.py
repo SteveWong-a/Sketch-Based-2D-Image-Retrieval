@@ -17,52 +17,44 @@ class GraphDBConnector:
         # from neo4j import GraphDatabase
         # self.driver = GraphDatabase.driver(uri, auth=(user, password))
 
-    def early_fusion_search(self, query_vector: list[float], metadata_constraints: Dict[str, Any], top_k: int = 5) -> str:
+    def early_fusion_search(self, query_vector: list, metadata_constraints: dict = None, top_k: int = 5) -> str:
         """
-        Constructs and executes an early-fusion Cypher query.
-        This performs a vector similarity search while simultaneously filtering by metadata
-        (e.g., tags, style) produced by the LLM translation layer.
-        
-        Args:
-            query_vector: The 512-D CLIP embedding list of floats.
-            metadata_constraints: The JSON constraints from the LLM translator.
-            top_k: Number of results to return.
-            
-        Returns:
-            The raw Cypher query string for demonstration purposes.
+        Generates a Cypher query for vector search with open classes and no constraints.
         """
-        # Extract constraints
-        tags = metadata_constraints.get("semantic_tags", [])
-        style = metadata_constraints.get("style_preference", "any")
-        min_quality = metadata_constraints.get("min_quality", 0.0)
-
-        # Build dynamic WHERE clause based on constraints
-        where_clauses = [f"node.quality >= {min_quality}"]
-        if style != "any":
-            where_clauses.append(f"node.style = '{style}'")
-        if tags:
-            # Check if any of the requested tags overlap with the node's tags
-            where_clauses.append("any(tag IN $tags WHERE tag IN node.tags)")
-            
-        where_statement = " AND ".join(where_clauses)
-        
-        # Cypher query for vector search with pre-filtering (Early Fusion)
-        # We use Neo4j's db.index.vector.queryNodes approach
         cypher_query = f"""
         CALL db.index.vector.queryNodes('clip_image_index', {top_k}, $query_vector) 
         YIELD node, score
-        WHERE {where_statement}
         RETURN node.id AS id, node.title AS title, score
         ORDER BY score DESC
         """
         
-        # Here we would typically run the query with parameters:
-        # params = {"query_vector": query_vector, "tags": tags}
-        # with self.driver.session() as session:
-        #     result = session.run(cypher_query, params)
-        #     return [record.data() for record in result]
+        return cypher_query.strip()
+
+    def mock_execute_query(self, cypher_query: str) -> list:
+        """
+        Simulates executing the HNSW Cypher query and returns mock image nodes.
+        In production, this would use the neo4j python driver.
+        """
+        import random
+        import time
+        time.sleep(0.5) # Simulate network/DB latency
         
-        return cypher_query
+        # Parse top_k from query or default to 5
+        # Generate some mock image results
+        results = []
+        for i in range(5):
+            seed = random.randint(1, 1000)
+            score = round(random.uniform(0.75, 0.99), 4)
+            results.append({
+                "id": f"img_{seed}",
+                "title": f"Retrieved Concept #{i+1}",
+                "url": f"https://picsum.photos/seed/{seed}/400/400",
+                "score": score
+            })
+            
+        # Sort by score descending to mimic HNSW return
+        results.sort(key=lambda x: x["score"], reverse=True)
+        return results
 
     def close(self):
         # self.driver.close()

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sketch Retrieval Pipeline</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <header>
+            <h1>Sketch-Based Retrieval</h1>
+            <p>Draw a concept to generate a Graph Database Query</p>
+        </header>
+
+        <main>
+            <!-- Canvas Section -->
+            <div class="panel canvas-panel">
+                <div class="panel-header">
+                    <h2>Input Sketch</h2>
+                    <div class="controls">
+                        <button id="clear-btn" class="btn secondary">Clear</button>
+                        <button id="search-btn" class="btn primary">Process Sketch</button>
+                    </div>
+                </div>
+                <div class="canvas-wrapper">
+                    <canvas id="sketch-canvas" width="400" height="400"></canvas>
+                </div>
+            </div>
+
+            <!-- Results Section -->
+            <div class="panel results-panel">
+                <div class="panel-header">
+                    <h2>Pipeline Pipeline</h2>
+                    <span id="status-indicator" class="status idle">Ready</span>
+                </div>
+                
+                <div class="results-content">
+                    <div class="result-block">
+                        <h3>1. CLIP Embedding</h3>
+                        <div class="code-box" id="embed-out">Awaiting input...</div>
+                    </div>
+                    
+                    <div class="result-block">
+                        <h3>2. LLM Prompt & Translation</h3>
+                        <div class="code-box" id="llm-out">Awaiting input...</div>
+                    </div>
+                    
+                    <div class="result-block">
+                        <h3>3. Generated Cypher Query</h3>
+                        <div class="code-box highlight" id="cypher-out">Awaiting input...</div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        
+        <!-- Visual Results Gallery Section -->
+        <section class="panel gallery-panel">
+            <div class="panel-header">
+                <h2>Visual Matches</h2>
+            </div>
+            <div id="image-grid" class="image-grid">
+                <!-- Image cards will be injected here dynamically -->
+                <div class="empty-state">No images retrieved yet. Draw a sketch and click 'Process Sketch'.</div>
+            </div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

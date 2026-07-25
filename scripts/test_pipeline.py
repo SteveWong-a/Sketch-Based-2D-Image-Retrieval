@@ -13,7 +13,7 @@ def test_pipeline():
     # 1. Initialize Components
     print("1. Initializing components...")
     clip_adapter = ClipAdapter()
-    llm_translator = LLMQueryTranslator()
+    llm_translator = LLMQueryTranslator(clip_adapter)
     graph_db = GraphDBConnector()
     print("Components initialized successfully.\n")
     

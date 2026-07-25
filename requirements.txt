@@ -8,3 +8,5 @@ transformers
 neo4j
 google-genai
 pydantic
+Flask
+flask-cors

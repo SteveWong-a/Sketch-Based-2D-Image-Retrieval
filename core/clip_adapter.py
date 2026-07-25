@@ -38,7 +38,14 @@ class ClipAdapter:
             image = image.convert("RGB")
             
         inputs = self.processor(images=image, return_tensors="pt").to(self.device)
-        image_features = self.model.get_image_features(**inputs)
+        image_features_out = self.model.get_image_features(**inputs)
+        
+        if hasattr(image_features_out, "pooler_output"):
+            image_features = image_features_out.pooler_output
+        elif hasattr(image_features_out, "image_embeds"):
+            image_features = image_features_out.image_embeds
+        else:
+            image_features = image_features_out
         
         # Normalize the embedding
         image_features = image_features / image_features.norm(p=2, dim=-1, keepdim=True)
@@ -50,6 +57,14 @@ class ClipAdapter:
         Optional utility to map text into the same space if needed for search.
         """
         inputs = self.processor(text=[text], return_tensors="pt", padding=True).to(self.device)
-        text_features = self.model.get_text_features(**inputs)
+        text_features_out = self.model.get_text_features(**inputs)
+        
+        if hasattr(text_features_out, "pooler_output"):
+            text_features = text_features_out.pooler_output
+        elif hasattr(text_features_out, "text_embeds"):
+            text_features = text_features_out.text_embeds
+        else:
+            text_features = text_features_out
+            
         text_features = text_features / text_features.norm(p=2, dim=-1, keepdim=True)
         return text_features.squeeze(0)
