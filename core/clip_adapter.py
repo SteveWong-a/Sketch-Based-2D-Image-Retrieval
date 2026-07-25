@@ -1,5 +1,6 @@
 import torch
 from PIL import Image
+import torch.nn.functional as F
 from transformers import CLIPProcessor, CLIPModel
 
 class ClipAdapter:
@@ -31,7 +32,7 @@ class ClipAdapter:
         if self.mock:
             # Return a random normalized 512-D vector
             vec = torch.randn(512, device=self.device)
-            return vec / vec.norm(p=2, dim=-1, keepdim=True)
+            return F.normalize(vec, p=2, dim=-1)
             
         # The processor expects RGB images
         if image.mode != "RGB":
@@ -48,7 +49,7 @@ class ClipAdapter:
             image_features = image_features_out
         
         # Normalize the embedding
-        image_features = image_features / image_features.norm(p=2, dim=-1, keepdim=True)
+        image_features = F.normalize(image_features, p=2, dim=-1)
         return image_features.squeeze(0) # Returns shape (512,)
 
     @torch.no_grad()
@@ -66,5 +67,5 @@ class ClipAdapter:
         else:
             text_features = text_features_out
             
-        text_features = text_features / text_features.norm(p=2, dim=-1, keepdim=True)
+        text_features = F.normalize(text_features, p=2, dim=-1)
         return text_features.squeeze(0)

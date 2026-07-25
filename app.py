@@ -51,8 +51,12 @@ def process_sketch():
             top_k=5
         )
         
+        # Extract concepts so we can pass to the mock db to get better images
+        concepts = llm_translator._get_nearest_neighbors(clip_embedding)
+        
         # 4. Execute Query (Mock) to get Image Results
-        image_results = graph_db.mock_execute_query(cypher_query)
+        # Passing the concepts so the mock API returns visually relevant images
+        image_results = graph_db.mock_execute_query(cypher_query, concepts=concepts)
         
         return jsonify({
             "success": True,
@@ -60,7 +64,7 @@ def process_sketch():
             "translation": translation_desc,
             "cypher_query": cypher_query,
             "results": image_results,
-            "concepts_prompt": llm_translator._generate_prompt(llm_translator._get_nearest_neighbors(clip_embedding))
+            "concepts_prompt": llm_translator._generate_prompt(concepts)
         })
     except Exception as e:
         import traceback

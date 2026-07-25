@@ -30,25 +30,38 @@ class GraphDBConnector:
         
         return cypher_query.strip()
 
-    def mock_execute_query(self, cypher_query: str) -> list:
+    def mock_execute_query(self, cypher_query: str, concepts: list = None) -> list:
         """
         Simulates executing the HNSW Cypher query and returns mock image nodes.
         In production, this would use the neo4j python driver.
         """
         import random
         import time
+        import urllib.parse
         time.sleep(0.5) # Simulate network/DB latency
         
         # Parse top_k from query or default to 5
         # Generate some mock image results
         results = []
+        
+        if concepts:
+            # Join up to 2 concepts for the search, e.g. "cat,animal"
+            query_str = ",".join(concepts[:2])
+            encoded_query = urllib.parse.quote(query_str)
+        else:
+            encoded_query = "abstract"
+            
         for i in range(5):
             seed = random.randint(1, 1000)
             score = round(random.uniform(0.75, 0.99), 4)
+            
+            # Use loremflickr to pull real photos matching the concepts
+            url = f"https://loremflickr.com/400/400/{encoded_query}/all?lock={seed}"
+            
             results.append({
                 "id": f"img_{seed}",
                 "title": f"Retrieved Concept #{i+1}",
-                "url": f"https://picsum.photos/seed/{seed}/400/400",
+                "url": url,
                 "score": score
             })
             
