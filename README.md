@@ -3,10 +3,17 @@ title: Sketch-Based 2D Image Retrieval
 emoji: ✏️
 colorFrom: blue
 colorTo: indigo
-sdk: docker
-app_port: 7860
+sdk: gradio
+sdk_version: "5.0.0"
+app_file: gradio_app.py
 pinned: false
-short_description: Draw a sketch and retrieve matching images via CLIP embeddings and graph database queries
+tags:
+  - computer-vision
+  - clip
+  - sketch
+  - image-retrieval
+  - zero-gpu
+short_description: Draw a sketch and retrieve matching images via CLIP embeddings
 ---
 
 # Sketch-Based 2D Image Retrieval
