@@ -11,7 +11,7 @@
     <div class="app-container">
         <header>
             <h1>Sketch-Based Retrieval</h1>
-            <p>Draw a concept to generate a Graph Database Query</p>
+            <p>Draw a concept to search a graph database via CLIP embeddings</p>
         </header>
 
         <main>
@@ -20,10 +20,31 @@
                 <div class="panel-header">
                     <h2>Input Sketch</h2>
                     <div class="controls">
+                        <button id="undo-btn" class="btn icon-btn" title="Undo (Ctrl+Z)">↩</button>
+                        <button id="eraser-btn" class="btn icon-btn" title="Eraser">◻</button>
                         <button id="clear-btn" class="btn secondary">Clear</button>
                         <button id="search-btn" class="btn primary">Process Sketch</button>
                     </div>
                 </div>
+
+                <!-- Drawing Toolbar -->
+                <div class="toolbar">
+                    <label class="toolbar-label">
+                        <span id="pen-btn" class="tool-toggle active" title="Pen">✏️</span>
+                    </label>
+                    <label class="toolbar-label brush-size-label">
+                        <span>Size</span>
+                        <input type="range" id="brush-size" min="1" max="30" value="3">
+                        <span id="brush-size-display">3</span>
+                    </label>
+                    <div class="color-swatches">
+                        <div class="swatch active" data-color="#000000" style="background:#000000;"></div>
+                        <div class="swatch" data-color="#ef4444" style="background:#ef4444;"></div>
+                        <div class="swatch" data-color="#3b82f6" style="background:#3b82f6;"></div>
+                        <div class="swatch" data-color="#10b981" style="background:#10b981;"></div>
+                    </div>
+                </div>
+
                 <div class="canvas-wrapper">
                     <canvas id="sketch-canvas" width="400" height="400"></canvas>
                 </div>
@@ -32,7 +53,7 @@
             <!-- Results Section -->
             <div class="panel results-panel">
                 <div class="panel-header">
-                    <h2>Pipeline Pipeline</h2>
+                    <h2>Pipeline</h2>
                     <span id="status-indicator" class="status idle">Ready</span>
                 </div>
                 
@@ -43,12 +64,27 @@
                     </div>
                     
                     <div class="result-block">
-                        <h3>2. LLM Prompt & Translation</h3>
+                        <h3>2. Extracted Concepts</h3>
+                        <div id="concept-tags" class="concept-tags">
+                            <span class="tag-placeholder">Awaiting input...</span>
+                        </div>
+                    </div>
+
+                    <div class="result-block">
+                        <h3>Recognition Confidence</h3>
+                        <div class="confidence-track">
+                            <div id="confidence-bar" class="confidence-fill"></div>
+                        </div>
+                        <span id="confidence-label" class="confidence-label"></span>
+                    </div>
+
+                    <div class="result-block">
+                        <h3>3. LLM Translation</h3>
                         <div class="code-box" id="llm-out">Awaiting input...</div>
                     </div>
                     
                     <div class="result-block">
-                        <h3>3. Generated Cypher Query</h3>
+                        <h3>4. Generated Cypher Query</h3>
                         <div class="code-box highlight" id="cypher-out">Awaiting input...</div>
                     </div>
                 </div>
@@ -59,9 +95,9 @@
         <section class="panel gallery-panel">
             <div class="panel-header">
                 <h2>Visual Matches</h2>
+                <span id="gallery-query-label" class="gallery-label"></span>
             </div>
             <div id="image-grid" class="image-grid">
-                <!-- Image cards will be injected here dynamically -->
                 <div class="empty-state">No images retrieved yet. Draw a sketch and click 'Process Sketch'.</div>
             </div>
         </section>

@@ -1,5 +1,5 @@
 import torch
-from PIL import Image
+from PIL import Image, ImageOps, ImageEnhance
 import torch.nn.functional as F
 from transformers import CLIPProcessor, CLIPModel
 
@@ -24,6 +24,26 @@ class ClipAdapter:
         self.processor = CLIPProcessor.from_pretrained(model_name)
         self.model.eval()
 
+    def preprocess_sketch(self, image: Image.Image) -> Image.Image:
+        """
+        Improves CLIP embedding quality for hand-drawn sketches:
+        - Inverts (black bg, white lines) to match edge-map training distribution
+        - Boosts contrast to sharpen faint strokes
+        """
+        if image.mode != "RGB":
+            image = image.convert("RGB")
+        
+        # Detect if this looks like a sketch (predominantly white bg)
+        import numpy as np
+        arr = np.array(image)
+        mean_brightness = arr.mean()
+        
+        if mean_brightness > 200:  # Light background — treat as sketch
+            image = ImageOps.invert(image)
+            image = ImageEnhance.Contrast(image).enhance(1.5)
+        
+        return image
+
     @torch.no_grad()
     def encode_image(self, image: Image.Image) -> torch.Tensor:
         """
@@ -33,6 +53,9 @@ class ClipAdapter:
             # Return a random normalized 512-D vector
             vec = torch.randn(512, device=self.device)
             return F.normalize(vec, p=2, dim=-1)
+            
+        # Pre-process sketch before encoding
+        image = self.preprocess_sketch(image)
             
         # The processor expects RGB images
         if image.mode != "RGB":

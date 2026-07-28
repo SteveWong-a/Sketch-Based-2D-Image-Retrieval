@@ -1,12 +1,18 @@
-torch
-torchvision
-numpy
-Pillow
-gradio
-spaces
-transformers
-neo4j
-google-genai
-pydantic
-Flask
-flask-cors
+# Core ML
+torch==2.3.1
+torchvision==0.18.1
+transformers==4.41.2
+huggingface-hub==0.23.4
+numpy==1.26.4
+Pillow==10.3.0
+
+# Web server
+Flask==3.0.3
+flask-cors==4.0.1
+gunicorn==22.0.0
+
+# Graph DB (for real Neo4j connection — mock used by default)
+neo4j==5.21.0
+
+# Utilities
+pydantic==2.7.4

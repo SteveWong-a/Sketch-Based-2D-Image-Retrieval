@@ -1,0 +1,2 @@
+weights/skribbl_model.pth filter=lfs diff=lfs merge=lfs -text
+data/vocab_embeddings.pt filter=lfs diff=lfs merge=lfs -text

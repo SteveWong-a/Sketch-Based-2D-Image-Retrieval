@@ -10,7 +10,9 @@ __pycache__/
 
 # PyTorch models and data
 *.pth
-weights/
+# Allow the production model weight (tracked via Git LFS)
+!weights/skribbl_model.pth
+old_weights/
 data/quickdraw_data/
 data/tu_berlin_data/
 data/glove.6B.300d.txt
