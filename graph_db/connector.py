@@ -45,18 +45,19 @@ class GraphDBConnector:
         results = []
         
         if concepts:
-            # Join up to 2 concepts for the search, e.g. "cat,animal"
-            query_str = ",".join(concepts[:2])
-            encoded_query = urllib.parse.quote(query_str)
+            # LoremFlickr strictly requires unencoded commas and no spaces
+            # Extract top 2 concepts, replace spaces with commas, and join
+            clean_concepts = [c.replace(" ", ",") for c in concepts[:2]]
+            query_str = ",".join(clean_concepts)
         else:
-            encoded_query = "abstract"
+            query_str = "abstract"
             
         for i in range(5):
             seed = random.randint(1, 1000)
             score = round(random.uniform(0.75, 0.99), 4)
             
             # Use loremflickr to pull real photos matching the concepts
-            url = f"https://loremflickr.com/400/400/{encoded_query}/all?lock={seed}"
+            url = f"https://loremflickr.com/400/400/{query_str}/all?lock={seed}"
             
             results.append({
                 "id": f"img_{seed}",
