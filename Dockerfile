@@ -31,8 +31,8 @@ RUN mkdir -p /app/data && chmod -R 777 /app/data
 # Pre-download CLIP model weights into the image at build time
 # This avoids a slow cold-start on first request in HF Spaces
 RUN python -c "from transformers import CLIPModel, CLIPProcessor; \
-    CLIPModel.from_pretrained('openai/clip-vit-base-patch32'); \
-    CLIPProcessor.from_pretrained('openai/clip-vit-base-patch32'); \
+    CLIPModel.from_pretrained('wkcn/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M'); \
+    CLIPProcessor.from_pretrained('wkcn/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M'); \
     print('CLIP model pre-cached.')"
 
 # Expose HF Spaces default port

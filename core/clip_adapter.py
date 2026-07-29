@@ -5,10 +5,10 @@ from transformers import CLIPProcessor, CLIPModel
 
 class ClipAdapter:
     """
-    Adapter for mapping images and text (or sketches) into a shared 512-D space.
-    Uses OpenAI's clip-vit-base-patch32.
+    Adapter for mapping images and text (or sketches) into a shared space.
+    Uses TinyCLIP (wkcn/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M) for extreme memory efficiency.
     """
-    def __init__(self, model_name="openai/clip-vit-base-patch32", device=None, mock=False):
+    def __init__(self, model_name="wkcn/TinyCLIP-ViT-8M-16-Text-3M-YFCC15M", device=None, mock=False):
         self.mock = mock
         if device is None:
             self.device = torch.device('cuda' if torch.cuda.is_available() else ('mps' if torch.backends.mps.is_available() else 'cpu'))
